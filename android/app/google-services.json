@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "561188637348",
+    "project_id": "boom-chat-82193",
+    "storage_bucket": "boom-chat-82193.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561188637348:android:8d62df73023f5012a67431",
+        "android_client_info": {
+          "package_name": "com.aryan_singh.boom_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561188637348-jmhoguirqsdfbv51h9u0ahonk3sl1vgv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC68y7PURitnI2E_EU7J3b14CnRJQp6qTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561188637348-jmhoguirqsdfbv51h9u0ahonk3sl1vgv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561188637348:android:dbf205a95e5cadf9a67431",
+        "android_client_info": {
+          "package_name": "com.example.boom_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561188637348-jmhoguirqsdfbv51h9u0ahonk3sl1vgv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC68y7PURitnI2E_EU7J3b14CnRJQp6qTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561188637348-jmhoguirqsdfbv51h9u0ahonk3sl1vgv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
