@@ -1,6 +1,6 @@
 import 'package:boom_chat/constants.dart';
 import 'package:boom_chat/screens/chat_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -17,6 +17,35 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool showSpinner=false;
   final _auth=FirebaseAuth.instance;//Used to authenticate the users
   String email="",password="";
+
+  Future<void> _showAlertDialog(String error)
+  {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Registration Failed'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children:  <Widget>[
+                Text('$error'),
+                Text('Press Retry to try again with a different email id'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Retry'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -101,12 +130,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                          {
                            Navigator.pushNamed(context, ChatScreen.id);
                          }
-                       setState(() {
-                         showSpinner = false;
-                       });
-                     } on Exception catch (e) {
+
+                     }on FirebaseAuthException catch(e)
+                      {
+                        if(e.code=='email-already-in-use')
+                          {
+                            String errorMessage='The email entered is already in use';
+                            _showAlertDialog(errorMessage);
+                          }
+                      }
+                     on Exception catch (e) {
                        print(e);
                      }
+                        setState(() {
+                          showSpinner = false;
+                        });
                     },
                     elevation: 20.0,
                     minWidth: 200.0,

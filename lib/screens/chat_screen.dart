@@ -1,7 +1,9 @@
+import 'package:boom_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:boom_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 final _fireStore = FirebaseFirestore.instance;
 late User loggedInUser;
@@ -19,6 +21,29 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String? messageText;
   final messageTextController = TextEditingController();
+  Future<bool> popState() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit '),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              //SystemNavigator.popUntil(context, (route) => false);
+              SystemNavigator.pop();
+            },
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    )) ??
+        false;
+  }
 
   @override
   void initState() {
@@ -66,61 +91,65 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     //getMessages();
     messagesStream();
-    return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                //Implement logout functionality
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
-        ],
-        title: const Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            MessageStream(),
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      messageTextController.clear(); //Clear the textfield
-                      //Implement send functionality.
-                      //messageText+loggedInUser.email
-                      // print(
-                      //     'Message is $messageText Logged in user is $loggedInUser');
-                     await _fireStore.collection('messages').add(
-                          {'text': messageText, 'sender': loggedInUser.email,'time': Timestamp.now()});
-                    },
-                    child: const Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return WillPopScope(
+      onWillPop: popState,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: null,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: () {
+                  //Implement logout functionality
+                  _auth.signOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, WelcomeScreen.id, (route) => false);
+                }),
           ],
+          title: const Text('⚡️Chat'),
+          backgroundColor: Colors.lightBlueAccent,
+        ),
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              MessageStream(),
+              Container(
+                decoration: kMessageContainerDecoration,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: messageTextController,
+                        onChanged: (value) {
+                          //Do something with the user input.
+                          messageText = value;
+                        },
+                        decoration: kMessageTextFieldDecoration,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        messageTextController.clear(); //Clear the textfield
+                        //Implement send functionality.
+                        //messageText+loggedInUser.email
+                        // print(
+                        //     'Message is $messageText Logged in user is $loggedInUser');
+                       await _fireStore.collection('messages').add(
+                            {'text': messageText, 'sender': loggedInUser.email,'time': Timestamp.now()});
+                      },
+                      child: const Text(
+                        'Send',
+                        style: kSendButtonTextStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
